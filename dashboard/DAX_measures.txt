@@ -1,0 +1,42 @@
+POWER BI — DAX MEASURES TO CREATE
+==================================
+Paste these one at a time. In Power BI: Home tab > "New measure" (with EmployeeTable
+selected in the Data pane), then paste the formula after the "=" and press Enter.
+
+1) Total Employees
+Total Employees = COUNTROWS(EmployeeTable)
+
+2) Average Salary
+Average Salary = AVERAGE(EmployeeTable[Salary])
+
+3) Average Rating
+Average Rating = AVERAGE(EmployeeTable[Rating])
+
+4) Avg Salary - Male
+Avg Salary Male = CALCULATE(AVERAGE(EmployeeTable[Salary]), EmployeeTable[Gender] = "Male")
+
+5) Avg Salary - Female
+Avg Salary Female = CALCULATE(AVERAGE(EmployeeTable[Salary]), EmployeeTable[Gender] = "Female")
+
+6) Gender Pay Gap %
+Gender Pay Gap % = DIVIDE([Avg Salary Male] - [Avg Salary Female], [Avg Salary Female])
+
+7) Inactive Count
+Inactive Count = CALCULATE(COUNTROWS(EmployeeTable), EmployeeTable[Active] = FALSE)
+
+8) Known Status Count
+Known Status Count = CALCULATE(COUNTROWS(EmployeeTable), NOT(ISBLANK(EmployeeTable[Active])))
+
+9) Inactive Rate %
+Inactive Rate % = DIVIDE([Inactive Count], [Known Status Count])
+
+10) Missing Salary %
+Missing Salary % = DIVIDE(
+    CALCULATE(COUNTROWS(EmployeeTable), ISBLANK(EmployeeTable[Salary])),
+    [Total Employees]
+)
+
+-----------------------------------------------
+TIP: after creating a measure, drag it onto a "Card" visual to turn it into a KPI tile.
+Format each Card's number format as currency (Salary measures) or percentage
+(Pay Gap %, Inactive Rate %) using the Format pane > Data label > Values.

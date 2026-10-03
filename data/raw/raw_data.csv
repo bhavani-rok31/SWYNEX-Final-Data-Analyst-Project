@@ -1,0 +1,70 @@
+EmployeeID,Full Name,Age,Gender,Department,City,Join_Date,Salary,Email,Rating,Active
+E1018,Divya Rao,36.0,FEMALE,hr,Jaipur,2022-07-19,97692.0,divya.rao14@yahoo.com,5,No
+E1054,  Neha   Malhotra  ,23.0,MALE,Human Resources,Jaipur,02/11/2020,$29852,neha.malhotra76@company.com,2,0
+E1012,V. Das,twenty-five,MALE,sales,chennai,02/11/2020,"32,100",,4.5,No
+E1048,SURESH CHOPRA,,m,HR,Kolkata,02/11/2020,,suresh.chopra86@gmail.com,3,N
+E1028,Sonal Malhotra,unknown,MALE,Marketing,Mumbai,14/05/2021,₹80724,sonal.malhotra90@GMAIL.COM,,Yes
+E1013,NEHA GUPTA,twenty-five,m,operations,Ahmedabad,2019-01-30,37833,neha.gupta70@gmail.com,2,no
+E1040,  Nikhil   Iyer  ,22,MALE,marketing,chennai,2019-01-30,,nikhil.iyer71@company.com,4.5,0
+E1011,neha verma,,Woman,sales,mumbai,2021-05-14,"68,309",neha.verma36@outlook.com,4,TRUE
+E1058,neha iyer,50.0,FEMALE,Human Resources,MUMBAI,14-May-2021,102014.0,neha.iyer55@company.com,,Y
+E1053,T. Singh,-58,Male,Finance,Surat,2020-11-02, 84682 ,tanya.singh90@yahoo.com,N/A,1
+E1037,Aditya Reddy,N/A,MALE,Human Resources,Ahmedabad,2020-11-02,unknown,aditya.reddy35@GMAIL.COM,five,0
+E1043,  Manish   Singh  ,thirty,M,operations,MUMBAI,14/05/2021,100631,manish.singh73@company.com,2,no
+E1009,S. Rao,,M,IT,pune,"May 14, 2021","99,364",suresh.rao63@gmail.com,five,yes
+E1041,karan singh,35,f,finance,Bangalore,19/07/2022,88464.0,karan.singh98@GMAIL.COM,N/A,Y
+E1019,S. Das,30.0,Female,Marketing,Pune,2021/05/14,"31,658",sneha.das36@gmail.com,1,N
+E1023,NEHA SHARMA,55.0,F,marketing,kolkata,2019-01-30,68404,neha.sharma34@yahoo.com,N/A,Y
+E1016,A. Verma,-25,MALE,Ops,surat,30-01-2019,,anjali.verma73@GMAIL.COM,4.5,Y
+E1039,kavya gupta,37.0,Woman,marketing,kolkata,14/05/2021,,kavya.gupta98@yahoo.com,,
+E1020,suresh patel,-31,MALE,sales,delhi,14-May-2021,unknown,suresh.patel17@gmail.com,5,N
+E1034,R. Das,24.0,F,Human Resources,,,₹57411,rahul.das80@yahoo.com,4,yes
+E1060,sonal chopra,-35,m,hr,delhi,2022-07-19,109717,sonal.chopra57@gmail.com,N/A,N
+E1004,neha chopra,N/A,F,Finance,chennai,14-May-2021,52460.0,neha.chopra88@gmail.com,N/A,
+E1014,  Anjali   Nair  ,51 yrs,M,Sales,Pune,02/11/2020,,anjali.nair94@GMAIL.COM,10,0
+E1029,Isha Gupta,50 yrs,Man,HR,Ahmedabad,19/07/2022,,isha.gupta71@outlook.com,3,0
+E1059,  Rohan   Nair  ,27 yrs,f,hr,Hyderabad,30-01-2019,114889,rohan.nair96@outlook.com,5,no
+E1023,NEHA SHARMA,46.0,F,marketing,kolkata,2019-01-30,68404,neha.sharma34@yahoo.com,N/A,Y
+E1032,I. Das,twenty-five,FEMALE,,Hyderabad,02/11/2020,unknown,,3.5,FALSE
+E1027,Tanya Patel,,Woman,operations,Bengaluru,"May 14, 2021",$51100,,4,0
+E1045,AMIT PATEL,,M,hr,pune,,62762.0,amit.patel59@gmail.com,10,no
+E1003,sanjay verma,,M,finance,Hyderabad,2021/05/14, 107397 ,sanjay.verma91@gmail.com,1,
+E1054,  Neha   Malhotra  ,N/A,MALE,Human Resources,Jaipur,02/11/2020,$29852,neha.malhotra76@company.com,2,0
+E1051,NEHA DAS,,,Marketing,Delhi,14/05/2021,$109896,neha.das92@company.com,five,Y
+E1021,priya rao,-34,F,finance,hyderabad,19/07/2022,₹45257,priya.rao23@outlook.com,1,yes
+E1002,N. Kumar,47 yrs,m,Sales,Bangalore,14-May-2021,$61421,nikhil.kumar98@company.com,2,No
+E1031,Nikhil Gupta,thirty,MALE,operations,surat,2021-05-14,,nikhil.gupta46@company.com,3.5,1
+E1057,Arjun Chopra,39.0,Male,IT Dept,Bangalore,14/05/2021,,arjun.chopra31@outlook.com,N/A,yes
+E1007,Suresh Sharma,-30,MALE,IT Dept,Ahmedabad,2019-01-30,"26,504",suresh.sharma69@company.com,10,N
+E1042,SNEHA MALHOTRA,39 yrs,m,,Pune,,unknown,sneha.malhotra17@outlook.com,2,Yes
+E1025,TANYA DAS,twenty-five,f,Human Resources,pune,2022-07-19, 78528 ,tanya.das38@GMAIL.COM,3,no
+E1021,priya rao,-34,F,finance,hyderabad,19/07/2022,₹45257,priya.rao23@outlook.com,1,yes
+E1046,K. Chopra,twenty-five,Male,operations,mumbai,2021/05/14,102993.0,karan.chopra60@company.com,3.5,Y
+E1050,rohan joshi,-52,M,finance,pune,19/07/2022,"88,532",,10,FALSE
+E1047,  Rajesh   Joshi  ,49,MALE,HR,MUMBAI,2022-07-19,100392,rajesh.joshi87@company.com,N/A,Yes
+E1048,SURESH CHOPRA,,m,HR,Kolkata,02/11/2020,,suresh.chopra86@gmail.com,3,N
+E1026,  Meera   Kumar  ,,MALE,Sales,bangalore,30-01-2019, 104516 ,meera.kumar57@yahoo.com,five,0
+E1017,rohan kumar,36.0,m,Ops,MUMBAI,,"106,416",rohan.kumar28@GMAIL.COM,5,yes
+E1001,Aditya Verma,38 yrs,F,Ops,surat,2021-05-14,₹37280,aditya.verma78@gmail.com,five,no
+E1006,  Aditya   Iyer  ,50 yrs,Female,finance,surat,30-01-2019, 77350 ,aditya.iyer18@GMAIL.COM,,No
+E1006,  Aditya   Iyer  ,50 yrs,Female,finance,surat,30-01-2019, 77350 ,aditya.iyer18@GMAIL.COM,,No
+E1024,P. Verma,48.0,f,finance,surat,2021-05-14,,,five,
+E1036,SANJAY DAS,,Female,Operations,  Mumbai ,30-01-2019, 30383 ,sanjay.das85@company.com,2,TRUE
+E1026,  Meera   Kumar  ,,MALE,Sales,bangalore,30-01-2019, 104516 ,meera.kumar57@yahoo.com,five,0
+E1055,  Sneha   Joshi  ,-21,Male,Operations,Chennai,2020-11-02,"110,175",sneha.joshi87@GMAIL.COM,3.5,N
+E1047,  Rajesh   Joshi  ,49,MALE,HR,MUMBAI,2022-07-19,100392,rajesh.joshi87@company.com,N/A,Yes
+E1019,S. Das,30.0,Female,Marketing,Pune,2021/05/14,"31,658",sneha.das36@gmail.com,1,N
+E1056,  Aditya   Das  ,55,Female,Ops,Bengaluru,2020-11-02,"37,903",aditya.das89@company.com,1,Yes
+E1015,vikram gupta,34,Man,IT,,2019-01-30,$94615,,five,No
+E1049,  Meera   Das  ,-39,Man,,Pune,2020-11-02,92449,meera.das70@outlook.com,3.5,Yes
+E1010,  Vikram   Kumar  ,56 yrs,Woman,Marketing,bangalore,2020-11-02, 113039 ,vikram.kumar67@outlook.com,2,no
+E1005,ANJALI JOSHI,thirty,Man,IT,mumbai,2021-05-14,,anjali.joshi28@GMAIL.COM,4.5,no
+E1030,VISHAL SINGH,N/A,FEMALE,marketing,pune,14-May-2021,unknown,vishal.singh20@yahoo.com,3.5,yes
+E1008,  Sneha   Singh  ,twenty-five,m,Operations,Delhi,2021/05/14,unknown,sneha.singh20@company.com,3,TRUE
+E1052,  Meera   Malhotra  ,51 yrs,Male,Ops,delhi,2021/05/14, 79387 ,meera.malhotra65@company.com,1,Y
+E1044,  Sneha   Joshi  ,N/A,FEMALE,marketing,hyderabad,30-01-2019,"32,894",sneha.joshi27@yahoo.com,5,
+E1038,V. Nair,38.0,F,Finance,Ahmedabad,2022-07-19, 74674 ,,4.5,yes
+E1009,S. Rao,,M,IT,pune,"May 14, 2021","99,364",suresh.rao63@gmail.com,five,yes
+E1033,Manish Kumar,-26,FEMALE,marketing,bangalore,14-May-2021,74692.0,manish.kumar54@company.com,2,0
+E1022,tanya rao,N/A,Female,Operations,Hyderabad,02/11/2020,₹54154,tanya.rao59@company.com,5,no
+E1035,Kavya Kumar,57 yrs,m,SALES,Delhi,05-14-2021,"65,768",kavya.kumar40@GMAIL.COM,10,1

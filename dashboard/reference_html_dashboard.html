@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Employee Workforce Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F4F5F1; --surface:#FFFFFF; --ink:#1E2422; --ink-soft:#5B6560;
+  --line:#DDE1D9; --teal:#2F6F5E; --teal-soft:#DCEAE5; --amber:#C0632B; --amber-soft:#F5E1D3;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:'IBM Plex Sans',Arial,sans-serif;
+}
+h1,h2,.serif{font-family:'Fraunces',Georgia,serif;}
+header{
+  padding:28px 32px 20px; border-bottom:1px solid var(--line);
+  background:var(--surface);
+}
+header h1{margin:0 0 4px; font-size:28px; font-weight:600; letter-spacing:-0.01em;}
+header p{margin:0; color:var(--ink-soft); font-size:14px; max-width:640px; line-height:1.5;}
+.wrap{padding:24px 32px 48px; max-width:1280px; margin:0 auto;}
+
+.filters{
+  display:flex; flex-wrap:wrap; gap:12px; margin-bottom:24px;
+  background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+}
+.filters label{font-size:12px; color:var(--ink-soft); display:block; margin-bottom:4px;}
+.filters select{
+  font-family:inherit; font-size:13px; padding:7px 10px; border-radius:6px;
+  border:1px solid var(--line); background:#fff; color:var(--ink); min-width:140px;
+}
+.filters .reset{
+  align-self:flex-end; background:none; border:1px solid var(--line); border-radius:6px;
+  padding:8px 12px; font-size:13px; color:var(--teal); cursor:pointer; font-family:inherit;
+}
+.filters .reset:hover{background:var(--teal-soft);}
+.filter-note{font-size:12px; color:var(--ink-soft); align-self:flex-end; margin-left:auto;}
+
+.kpis{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:28px;}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr);}}
+.kpi{
+  background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px 18px;
+}
+.kpi .label{font-size:12px; color:var(--ink-soft); margin-bottom:6px;}
+.kpi .value{font-family:'Fraunces',serif; font-size:26px; font-weight:600; line-height:1;}
+.kpi .sub{font-size:12px; color:var(--ink-soft); margin-top:4px;}
+.kpi.flag .value{color:var(--amber);}
+
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media (max-width:900px){.grid{grid-template-columns:1fr;}}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px 18px 8px;
+  margin-bottom:16px;
+}
+.card.full{grid-column:1 / -1;}
+.card h2{font-size:15px; font-weight:600; margin:0 0 2px;}
+.card .note{font-size:12px; color:var(--ink-soft); margin:0 0 10px;}
+canvas{max-height:260px;}
+
+.insights{
+  background:var(--teal-soft); border:1px solid var(--line); border-radius:10px;
+  padding:16px 18px; margin-bottom:24px;
+}
+.insights h2{font-size:15px; margin:0 0 8px;}
+.insights ul{margin:0; padding-left:18px; font-size:13px; line-height:1.6; color:var(--ink);}
+
+footer{padding:16px 32px 40px; font-size:12px; color:var(--ink-soft); max-width:1280px; margin:0 auto;}
+
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#181C1A; --surface:#20251F; --ink:#EDEFEA; --ink-soft:#9AA39C; --line:#333A32;
+    --teal-soft:#1F3733; --amber-soft:#3A2A1E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#181C1A; --surface:#20251F; --ink:#EDEFEA; --ink-soft:#9AA39C; --line:#333A32;
+  --teal-soft:#1F3733; --amber-soft:#3A2A1E;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Employee Workforce Dashboard</h1>
+  <p>60 employees across 6 departments and 10 cities, cleaned from raw HR export. Age, Salary and Rating have 27&ndash;42% missing values, so figures below reflect only the rows on hand and should be read as directional.</p>
+</header>
+
+<div class="wrap">
+  <div class="filters">
+    <div><label for="fDept">Department</label><select id="fDept"><option value="">All</option></select></div>
+    <div><label for="fCity">City</label><select id="fCity"><option value="">All</option></select></div>
+    <div><label for="fGender">Gender</label><select id="fGender"><option value="">All</option></select></div>
+    <div><label for="fActive">Status</label><select id="fActive"><option value="">All</option><option value="true">Active</option><option value="false">Inactive</option></select></div>
+    <button class="reset" id="resetBtn">Reset filters</button>
+    <span class="filter-note" id="countNote"></span>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="label">Employees</div><div class="value" id="kpiCount">&mdash;</div><div class="sub" id="kpiCountSub"></div></div>
+    <div class="kpi"><div class="label">Avg. salary</div><div class="value" id="kpiSalary">&mdash;</div><div class="sub" id="kpiSalarySub">of records with data</div></div>
+    <div class="kpi"><div class="label">Avg. rating</div><div class="value" id="kpiRating">&mdash;</div><div class="sub">out of 5</div></div>
+    <div class="kpi flag"><div class="label">Gender pay gap</div><div class="value" id="kpiGap">&mdash;</div><div class="sub">men vs. women, avg.</div></div>
+    <div class="kpi flag"><div class="label">Inactive rate</div><div class="value" id="kpiInactive">&mdash;</div><div class="sub">of known status</div></div>
+  </div>
+
+  <div class="insights">
+    <h2>Main findings</h2>
+    <ul>
+      <li>Men earn ~22% more than women on average (₹80.8k vs ₹66.1k), with almost identical ratings &mdash; worth an HR pay-equity review.</li>
+      <li>Pay tracks performance only weakly (Spearman ρ = 0.25); several high earners are rated 2 or below, and several low earners are rated 4.5+.</li>
+      <li>Newer join cohorts are paid more but rated lower &mdash; average salary rises from ₹65k (2019) to ₹85k (2022) while rating falls from 4.1 to ~3.3.</li>
+      <li>55% of employees with known status are inactive; HR (75%) and Sales (71%) have the highest inactivity, Finance the lowest (33%).</li>
+    </ul>
+  </div>
+
+  <div class="grid">
+    <div class="card"><h2>Average salary by department</h2><p class="note">₹, records with salary data</p><canvas id="chSalaryDept"></canvas></div>
+    <div class="card"><h2>Average rating by department</h2><p class="note">out of 5, records with rating data</p><canvas id="chRatingDept"></canvas></div>
+    <div class="card"><h2>Average salary by gender</h2><p class="note">₹, records with both fields</p><canvas id="chSalaryGender"></canvas></div>
+    <div class="card"><h2>Headcount by city</h2><p class="note">all filtered records</p><canvas id="chCity"></canvas></div>
+    <div class="card full"><h2>Salary and rating by join-year cohort</h2><p class="note">average salary (₹) and average rating (right axis) per year joined</p><canvas id="chCohort"></canvas></div>
+    <div class="card"><h2>Active vs. inactive by department</h2><p class="note">records with known status</p><canvas id="chActive"></canvas></div>
+    <div class="card"><h2>Salary vs. rating</h2><p class="note">each point is one employee with both fields recorded</p><canvas id="chScatter"></canvas></div>
+  </div>
+</div>
+
+<footer>Source: cleaned employee dataset (Task 1) and EDA findings (Task 2), 60 rows. Filters recompute all KPIs and charts from the underlying records; empty groups are hidden. Missing values are excluded from averages, not treated as zero.</footer>
+
+<script>
+const DATA = [{"Age": 38.0, "Gender": "Female", "Department": "Operations", "City": "Surat", "JoinYear": 2021.0, "Salary": 37280.0, "Rating": 5.0, "Active": false}, {"Age": 47.0, "Gender": "Male", "Department": "Sales", "City": "Bengaluru", "JoinYear": 2021.0, "Salary": 61421.0, "Rating": 2.0, "Active": false}, {"Age": null, "Gender": "Male", "Department": "Finance", "City": "Hyderabad", "JoinYear": 2021.0, "Salary": 107397.0, "Rating": 1.0, "Active": null}, {"Age": null, "Gender": "Female", "Department": "Finance", "City": "Chennai", "JoinYear": 2021.0, "Salary": 52460.0, "Rating": null, "Active": null}, {"Age": 30.0, "Gender": "Male", "Department": "IT", "City": "Mumbai", "JoinYear": 2021.0, "Salary": null, "Rating": 4.5, "Active": false}, {"Age": 50.0, "Gender": "Female", "Department": "Finance", "City": "Surat", "JoinYear": 2019.0, "Salary": 77350.0, "Rating": null, "Active": false}, {"Age": null, "Gender": "Male", "Department": "IT", "City": "Ahmedabad", "JoinYear": 2019.0, "Salary": 26504.0, "Rating": null, "Active": false}, {"Age": 25.0, "Gender": "Male", "Department": "Operations", "City": "Delhi", "JoinYear": 2021.0, "Salary": null, "Rating": 3.0, "Active": true}, {"Age": null, "Gender": "Male", "Department": "IT", "City": "Pune", "JoinYear": 2021.0, "Salary": 99364.0, "Rating": 5.0, "Active": true}, {"Age": 56.0, "Gender": "Female", "Department": "Marketing", "City": "Bengaluru", "JoinYear": 2020.0, "Salary": 113039.0, "Rating": 2.0, "Active": false}, {"Age": null, "Gender": "Female", "Department": "Sales", "City": "Mumbai", "JoinYear": 2021.0, "Salary": 68309.0, "Rating": 4.0, "Active": true}, {"Age": 25.0, "Gender": "Male", "Department": "Sales", "City": "Chennai", "JoinYear": 2020.0, "Salary": 32100.0, "Rating": 4.5, "Active": false}, {"Age": 25.0, "Gender": "Male", "Department": "Operations", "City": "Ahmedabad", "JoinYear": 2019.0, "Salary": 37833.0, "Rating": 2.0, "Active": false}, {"Age": 51.0, "Gender": "Male", "Department": "Sales", "City": "Pune", "JoinYear": 2020.0, "Salary": null, "Rating": null, "Active": false}, {"Age": 34.0, "Gender": "Male", "Department": "IT", "City": null, "JoinYear": 2019.0, "Salary": 94615.0, "Rating": 5.0, "Active": false}, {"Age": null, "Gender": "Male", "Department": "Operations", "City": "Surat", "JoinYear": 2019.0, "Salary": null, "Rating": 4.5, "Active": true}, {"Age": 36.0, "Gender": "Male", "Department": "Operations", "City": "Mumbai", "JoinYear": null, "Salary": 106416.0, "Rating": 5.0, "Active": true}, {"Age": 36.0, "Gender": "Female", "Department": "HR", "City": "Jaipur", "JoinYear": 2022.0, "Salary": 97692.0, "Rating": 5.0, "Active": false}, {"Age": 30.0, "Gender": "Female", "Department": "Marketing", "City": "Pune", "JoinYear": 2021.0, "Salary": 31658.0, "Rating": 1.0, "Active": false}, {"Age": null, "Gender": "Male", "Department": "Sales", "City": "Delhi", "JoinYear": 2021.0, "Salary": null, "Rating": 5.0, "Active": false}, {"Age": null, "Gender": "Female", "Department": "Finance", "City": "Hyderabad", "JoinYear": 2022.0, "Salary": 45257.0, "Rating": 1.0, "Active": true}, {"Age": null, "Gender": "Female", "Department": "Operations", "City": "Hyderabad", "JoinYear": 2020.0, "Salary": 54154.0, "Rating": 5.0, "Active": false}, {"Age": 55.0, "Gender": "Female", "Department": "Marketing", "City": "Kolkata", "JoinYear": 2019.0, "Salary": 68404.0, "Rating": null, "Active": true}, {"Age": 48.0, "Gender": "Female", "Department": "Finance", "City": "Surat", "JoinYear": 2021.0, "Salary": null, "Rating": 5.0, "Active": null}, {"Age": 25.0, "Gender": "Female", "Department": "HR", "City": "Pune", "JoinYear": 2022.0, "Salary": 78528.0, "Rating": 3.0, "Active": false}, {"Age": null, "Gender": "Male", "Department": "Sales", "City": "Bengaluru", "JoinYear": 2019.0, "Salary": 104516.0, "Rating": 5.0, "Active": false}, {"Age": null, "Gender": "Female", "Department": "Operations", "City": "Bengaluru", "JoinYear": 2021.0, "Salary": 51100.0, "Rating": 4.0, "Active": false}, {"Age": null, "Gender": "Male", "Department": "Marketing", "City": "Mumbai", "JoinYear": 2021.0, "Salary": 80724.0, "Rating": null, "Active": true}, {"Age": 50.0, "Gender": "Male", "Department": "HR", "City": "Ahmedabad", "JoinYear": 2022.0, "Salary": null, "Rating": 3.0, "Active": false}, {"Age": null, "Gender": "Female", "Department": "Marketing", "City": "Pune", "JoinYear": 2021.0, "Salary": null, "Rating": 3.5, "Active": true}, {"Age": 30.0, "Gender": "Male", "Department": "Operations", "City": "Surat", "JoinYear": 2021.0, "Salary": null, "Rating": 3.5, "Active": true}, {"Age": 25.0, "Gender": "Female", "Department": null, "City": "Hyderabad", "JoinYear": 2020.0, "Salary": null, "Rating": 3.5, "Active": false}, {"Age": null, "Gender": "Female", "Department": "Marketing", "City": "Bengaluru", "JoinYear": 2021.0, "Salary": 74692.0, "Rating": 2.0, "Active": false}, {"Age": 24.0, "Gender": "Female", "Department": "HR", "City": null, "JoinYear": null, "Salary": 57411.0, "Rating": 4.0, "Active": true}, {"Age": 57.0, "Gender": "Male", "Department": "Sales", "City": "Delhi", "JoinYear": 2021.0, "Salary": 65768.0, "Rating": null, "Active": true}, {"Age": null, "Gender": "Female", "Department": "Operations", "City": "Mumbai", "JoinYear": 2019.0, "Salary": 30383.0, "Rating": 2.0, "Active": true}, {"Age": null, "Gender": "Male", "Department": "HR", "City": "Ahmedabad", "JoinYear": 2020.0, "Salary": null, "Rating": 5.0, "Active": false}, {"Age": 38.0, "Gender": "Female", "Department": "Finance", "City": "Ahmedabad", "JoinYear": 2022.0, "Salary": 74674.0, "Rating": 4.5, "Active": true}, {"Age": 37.0, "Gender": "Female", "Department": "Marketing", "City": "Kolkata", "JoinYear": 2021.0, "Salary": null, "Rating": null, "Active": null}, {"Age": 22.0, "Gender": "Male", "Department": "Marketing", "City": "Chennai", "JoinYear": 2019.0, "Salary": null, "Rating": 4.5, "Active": false}, {"Age": 35.0, "Gender": "Female", "Department": "Finance", "City": "Bengaluru", "JoinYear": 2022.0, "Salary": 88464.0, "Rating": null, "Active": true}, {"Age": 39.0, "Gender": "Male", "Department": null, "City": "Pune", "JoinYear": null, "Salary": null, "Rating": 2.0, "Active": true}, {"Age": 30.0, "Gender": "Male", "Department": "Operations", "City": "Mumbai", "JoinYear": 2021.0, "Salary": 100631.0, "Rating": 2.0, "Active": false}, {"Age": null, "Gender": "Female", "Department": "Marketing", "City": "Hyderabad", "JoinYear": 2019.0, "Salary": 32894.0, "Rating": 5.0, "Active": null}, {"Age": null, "Gender": "Male", "Department": "HR", "City": "Pune", "JoinYear": null, "Salary": 62762.0, "Rating": null, "Active": false}, {"Age": 25.0, "Gender": "Male", "Department": "Operations", "City": "Mumbai", "JoinYear": 2021.0, "Salary": 102993.0, "Rating": 3.5, "Active": true}, {"Age": 49.0, "Gender": "Male", "Department": "HR", "City": "Mumbai", "JoinYear": 2022.0, "Salary": 100392.0, "Rating": null, "Active": true}, {"Age": null, "Gender": "Male", "Department": "HR", "City": "Kolkata", "JoinYear": 2020.0, "Salary": null, "Rating": 3.0, "Active": false}, {"Age": null, "Gender": "Male", "Department": null, "City": "Pune", "JoinYear": 2020.0, "Salary": 92449.0, "Rating": 3.5, "Active": true}, {"Age": null, "Gender": "Male", "Department": "Finance", "City": "Pune", "JoinYear": 2022.0, "Salary": 88532.0, "Rating": null, "Active": false}, {"Age": null, "Gender": null, "Department": "Marketing", "City": "Delhi", "JoinYear": 2021.0, "Salary": 109896.0, "Rating": 5.0, "Active": true}, {"Age": 51.0, "Gender": "Male", "Department": "Operations", "City": "Delhi", "JoinYear": 2021.0, "Salary": 79387.0, "Rating": 1.0, "Active": true}, {"Age": null, "Gender": "Male", "Department": "Finance", "City": "Surat", "JoinYear": 2020.0, "Salary": 84682.0, "Rating": null, "Active": true}, {"Age": 23.0, "Gender": "Male", "Department": "HR", "City": "Jaipur", "JoinYear": 2020.0, "Salary": 29852.0, "Rating": 2.0, "Active": false}, {"Age": null, "Gender": "Male", "Department": "Operations", "City": "Chennai", "JoinYear": 2020.0, "Salary": 110175.0, "Rating": 3.5, "Active": false}, {"Age": 55.0, "Gender": "Female", "Department": "Operations", "City": "Bengaluru", "JoinYear": 2020.0, "Salary": 37903.0, "Rating": 1.0, "Active": true}, {"Age": 39.0, "Gender": "Male", "Department": "IT", "City": "Bengaluru", "JoinYear": 2021.0, "Salary": null, "Rating": null, "Active": true}, {"Age": 50.0, "Gender": "Female", "Department": "HR", "City": "Mumbai", "JoinYear": 2021.0, "Salary": 102014.0, "Rating": null, "Active": true}, {"Age": 27.0, "Gender": "Female", "Department": "HR", "City": "Hyderabad", "JoinYear": 2019.0, "Salary": 114889.0, "Rating": 5.0, "Active": false}, {"Age": null, "Gender": "Male", "Department": "HR", "City": "Delhi", "JoinYear": 2022.0, "Salary": 109717.0, "Rating": null, "Active": false}];
+
+const teal = getComputedStyle(document.documentElement).getPropertyValue('--teal').trim() || '#2F6F5E';
+const amber = getComputedStyle(document.documentElement).getPropertyValue('--amber').trim() || '#C0632B';
+const ink = '#1E2422';
+Chart.defaults.font.family = "'IBM Plex Sans', Arial, sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#5B6560';
+
+function uniqueSorted(arr){ return [...new Set(arr.filter(v=>v!=null))].sort(); }
+function fillSelect(sel, values){
+  values.forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); });
+}
+fillSelect(document.getElementById('fDept'), uniqueSorted(DATA.map(d=>d.Department)));
+fillSelect(document.getElementById('fCity'), uniqueSorted(DATA.map(d=>d.City)));
+fillSelect(document.getElementById('fGender'), uniqueSorted(DATA.map(d=>d.Gender)));
+
+function avg(arr){ return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null; }
+function fmtMoney(v){ return v==null ? '—' : '₹'+Math.round(v).toLocaleString('en-IN'); }
+function fmtNum(v,d=1){ return v==null ? '—' : v.toFixed(d); }
+function fmtPct(v){ return v==null ? '—' : Math.round(v*100)+'%'; }
+
+let charts = {};
+function destroyAll(){ Object.values(charts).forEach(c=>c && c.destroy()); charts={}; }
+
+function groupAvg(rows, key, field){
+  const groups = {};
+  rows.forEach(r=>{
+    const g = r[key]; const v = r[field];
+    if(g==null || v==null) return;
+    (groups[g] = groups[g]||[]).push(v);
+  });
+  const labels = Object.keys(groups).sort();
+  return { labels, values: labels.map(l=>avg(groups[l])), counts: labels.map(l=>groups[l].length) };
+}
+
+function barChart(id, labels, values, color, yLabel){
+  const ctx = document.getElementById(id);
+  return new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[{ data: values, backgroundColor: color, borderRadius:4, maxBarThickness:42 }] },
+    options:{
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(c)=> yLabel==='money'? fmtMoney(c.raw): fmtNum(c.raw)}} },
+      scales:{ y:{ beginAtZero:true, grid:{color:'#E4E6E0'}, ticks:{callback:(v)=> yLabel==='money' ? '₹'+(v/1000)+'k' : v } }, x:{ grid:{display:false} } },
+      responsive:true, maintainAspectRatio:false
+    }
+  });
+}
+
+function render(){
+  const dept = document.getElementById('fDept').value;
+  const city = document.getElementById('fCity').value;
+  const gender = document.getElementById('fGender').value;
+  const active = document.getElementById('fActive').value;
+
+  const rows = DATA.filter(r=>
+    (!dept || r.Department===dept) &&
+    (!city || r.City===city) &&
+    (!gender || r.Gender===gender) &&
+    (active==='' || String(r.Active)===active)
+  );
+
+  document.getElementById('countNote').textContent = rows.length + ' of ' + DATA.length + ' employees shown';
+
+  // KPIs
+  const salaries = rows.map(r=>r.Salary).filter(v=>v!=null);
+  const ratings = rows.map(r=>r.Rating).filter(v=>v!=null);
+  const known = rows.filter(r=>r.Active!=null);
+  const inactiveN = known.filter(r=>r.Active===false).length;
+  const menSal = avg(rows.filter(r=>r.Gender==='Male' && r.Salary!=null).map(r=>r.Salary));
+  const womenSal = avg(rows.filter(r=>r.Gender==='Female' && r.Salary!=null).map(r=>r.Salary));
+  const gap = (menSal && womenSal) ? (menSal-womenSal)/womenSal : null;
+
+  document.getElementById('kpiCount').textContent = rows.length;
+  document.getElementById('kpiCountSub').textContent = rows.length===DATA.length ? 'all records' : 'filtered';
+  document.getElementById('kpiSalary').textContent = fmtMoney(avg(salaries));
+  document.getElementById('kpiSalarySub').textContent = salaries.length + ' of ' + rows.length + ' have salary data';
+  document.getElementById('kpiRating').textContent = fmtNum(avg(ratings));
+  document.getElementById('kpiGap').textContent = gap==null ? '—' : (gap>=0?'+':'') + Math.round(gap*100)+'%';
+  document.getElementById('kpiInactive').textContent = known.length ? fmtPct(inactiveN/known.length) : '—';
+
+  destroyAll();
+
+  const byDeptSal = groupAvg(rows,'Department','Salary');
+  charts.d1 = barChart('chSalaryDept', byDeptSal.labels, byDeptSal.values, teal, 'money');
+
+  const byDeptRat = groupAvg(rows,'Department','Rating');
+  charts.d2 = barChart('chRatingDept', byDeptRat.labels, byDeptRat.values, amber, 'num');
+
+  const genderGroups = {};
+  rows.forEach(r=>{ if(r.Gender && r.Salary!=null) (genderGroups[r.Gender]=genderGroups[r.Gender]||[]).push(r.Salary); });
+  const gLabels = Object.keys(genderGroups).sort();
+  charts.d3 = barChart('chSalaryGender', gLabels, gLabels.map(l=>avg(genderGroups[l])), [teal,amber], 'money');
+
+  const cityGroups = {};
+  rows.forEach(r=>{ if(r.City) cityGroups[r.City] = (cityGroups[r.City]||0)+1; });
+  const cLabels = Object.keys(cityGroups).sort((a,b)=>cityGroups[b]-cityGroups[a]);
+  charts.d4 = barChart('chCity', cLabels, cLabels.map(l=>cityGroups[l]), teal, 'num');
+
+  // cohort dual axis
+  const cohortSal = groupAvg(rows,'JoinYear','Salary');
+  const cohortRat = groupAvg(rows,'JoinYear','Rating');
+  const years = uniqueSorted(rows.map(r=>r.JoinYear)).map(String);
+  const salByYear = years.map(y=>{ const i=cohortSal.labels.indexOf(String(y)); return i>-1?cohortSal.values[i]:null; });
+  const ratByYear = years.map(y=>{ const i=cohortRat.labels.indexOf(String(y)); return i>-1?cohortRat.values[i]:null; });
+  charts.d5 = new Chart(document.getElementById('chCohort'), {
+    type:'line',
+    data:{ labels: years, datasets:[
+      { label:'Avg salary (₹)', data: salByYear, borderColor: teal, backgroundColor: teal, yAxisID:'y', tension:0.3 },
+      { label:'Avg rating', data: ratByYear, borderColor: amber, backgroundColor: amber, yAxisID:'y2', tension:0.3 }
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'top', align:'end'} },
+      scales:{
+        y:{ position:'left', ticks:{callback:v=>'₹'+(v/1000)+'k'}, grid:{color:'#E4E6E0'} },
+        y2:{ position:'right', min:0, max:5, grid:{display:false} },
+        x:{ grid:{display:false} }
+      }
+    }
+  });
+
+  // active by dept stacked
+  const deptSet = uniqueSorted(rows.map(r=>r.Department));
+  const activeCounts = deptSet.map(d=>rows.filter(r=>r.Department===d && r.Active===true).length);
+  const inactiveCounts = deptSet.map(d=>rows.filter(r=>r.Department===d && r.Active===false).length);
+  charts.d6 = new Chart(document.getElementById('chActive'), {
+    type:'bar',
+    data:{ labels: deptSet, datasets:[
+      { label:'Active', data: activeCounts, backgroundColor: teal, borderRadius:4 },
+      { label:'Inactive', data: inactiveCounts, backgroundColor: amber, borderRadius:4 }
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'top', align:'end'} },
+      scales:{ x:{ stacked:true, grid:{display:false} }, y:{ stacked:true, grid:{color:'#E4E6E0'} } }
+    }
+  });
+
+  // scatter
+  const scatterPts = rows.filter(r=>r.Salary!=null && r.Rating!=null).map(r=>({x:r.Rating, y:r.Salary}));
+  charts.d7 = new Chart(document.getElementById('chScatter'), {
+    type:'scatter',
+    data:{ datasets:[{ data: scatterPts, backgroundColor: teal+'CC' }] },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(c)=>'Rating '+c.raw.x+', '+fmtMoney(c.raw.y)}} },
+      scales:{
+        x:{ title:{display:true,text:'Rating'}, min:0, max:5.5, grid:{color:'#E4E6E0'} },
+        y:{ title:{display:true,text:'Salary (₹)'}, ticks:{callback:v=>'₹'+(v/1000)+'k'}, grid:{color:'#E4E6E0'} }
+      }
+    }
+  });
+}
+
+['fDept','fCity','fGender','fActive'].forEach(id=>document.getElementById(id).addEventListener('change', render));
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  ['fDept','fCity','fGender','fActive'].forEach(id=>document.getElementById(id).value='');
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
